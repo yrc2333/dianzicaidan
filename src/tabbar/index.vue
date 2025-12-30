@@ -1,33 +1,16 @@
 <script setup lang="ts">
-// i-carbon-code
 import type { CustomTabBarItem } from './types'
 import { customTabbarEnable, needHideNativeTabbar, tabbarCacheEnable } from './config'
 import { tabbarList, tabbarStore } from './store'
 
 // #ifdef MP-WEIXIN
-// 将自定义节点设置成虚拟的（去掉自定义组件包裹层），更加接近Vue组件的表现，能更好的使用flex属性
 defineOptions({
   virtualHost: true,
 })
 // #endif
 
-/**
- * 中间的鼓包tabbarItem的点击事件
- */
-function handleClickBulge() {
-  uni.showToast({
-    title: '点击了中间的鼓包tabbarItem',
-    icon: 'none',
-  })
-}
-
 function handleClick(index: number) {
-  // 点击原来的不做操作
   if (index === tabbarStore.curIdx) {
-    return
-  }
-  if (tabbarList[index].isBulge) {
-    handleClickBulge()
     return
   }
   const url = tabbarList[index].pagePath
@@ -39,17 +22,15 @@ function handleClick(index: number) {
     uni.navigateTo({ url })
   }
 }
+
 // #ifndef MP-WEIXIN || MP-ALIPAY
-// 因为有了 custom:true， 微信里面不需要多余的hide操作
 onLoad(() => {
-  // 解决原生 tabBar 未隐藏导致有2个 tabBar 的问题
   needHideNativeTabbar
   && uni.hideTabBar({
     fail(err) {
       console.log('hideTabBar fail: ', err)
     },
     success(res) {
-      // console.log('hideTabBar success: ', res)
     },
   })
 })
@@ -57,75 +38,55 @@ onLoad(() => {
 
 // #ifdef MP-ALIPAY
 onMounted(() => {
-  // 解决支付宝自定义tabbar 未隐藏导致有2个 tabBar 的问题; 注意支付宝很特别，需要在 onMounted 钩子调用
-  customTabbarEnable // 另外，支付宝里面，只要是 customTabbar 都需要隐藏
+  customTabbarEnable
   && uni.hideTabBar({
     fail(err) {
       console.log('hideTabBar fail: ', err)
     },
     success(res) {
-      // console.log('hideTabBar success: ', res)
     },
   })
 })
 // #endif
-const activeColor = 'var(--wot-color-theme, #1890ff)'
-const inactiveColor = '#666'
+
+const activeColor = '#ff4d4d'
+const inactiveColor = '#2d2d2d'
+
 function getColorByIndex(index: number) {
   return tabbarStore.curIdx === index ? activeColor : inactiveColor
 }
 
-function getImageByIndex(index: number, item: CustomTabBarItem) {
-  if (!item.iconActive) {
-    console.warn('image 模式下，需要配置 iconActive (高亮时的图片），否则无法切换高亮图片')
-    return item.icon
-  }
-  return tabbarStore.curIdx === index ? item.iconActive : item.icon
+function getBgColorByIndex(index: number) {
+  return tabbarStore.curIdx === index ? '#fff9c4' : '#ffffff'
 }
 </script>
 
 <template>
-  <view v-if="customTabbarEnable" class="h-50px pb-safe">
-    <view class="border-and-fixed bg-white" @touchmove.stop.prevent>
-      <view class="h-50px flex items-center">
+  <view v-if="customTabbarEnable" class="h-60px pb-safe">
+    <view class="hand-tabbar" @touchmove.stop.prevent>
+      <view class="hand-tabbar-content">
         <view
           v-for="(item, index) in tabbarList" :key="index"
-          class="flex flex-1 flex-col items-center justify-center"
-          :style="{ color: getColorByIndex(index) }"
+          class="hand-tabbar-item"
+          :style="{ backgroundColor: getBgColorByIndex(index), color: getColorByIndex(index) }"
           @click="handleClick(index)"
         >
-          <view v-if="item.isBulge" class="relative">
-            <!-- 中间一个鼓包tabbarItem的处理 -->
-            <view class="bulge">
-              <!-- TODO 2/2: 中间鼓包tabbarItem配置：通常是一个图片，或者icon，点击触发业务逻辑 -->
-              <!-- 常见的是：扫描按钮、发布按钮、更多按钮等 -->
-              <image class="mt-6rpx h-200rpx w-200rpx" src="/static/tabbar/scan.png" />
-            </view>
-          </view>
-          <view v-else class="relative px-3 text-center">
-            <template v-if="item.iconType === 'uiLib'">
-              <!-- TODO: 以下内容请根据选择的UI库自行替换 -->
-              <!-- 如：<wd-icon name="home" /> (https://wot-design-uni.cn/component/icon.html) -->
-              <!-- 如：<uv-icon name="home" /> (https://www.uvui.cn/components/icon.html) -->
-              <!-- 如：<sar-icon name="image" /> (https://sard.wzt.zone/sard-uniapp-docs/components/icon)(sar没有home图标^_^) -->
-              <!-- <wd-icon :name="item.icon" size="20" /> -->
-            </template>
+          <view class="item-inner">
             <template v-if="item.iconType === 'unocss' || item.iconType === 'iconfont'">
-              <view :class="item.icon" class="text-20px" />
+              <view :class="item.icon" class="item-icon" />
             </template>
             <template v-if="item.iconType === 'image'">
-              <image :src="getImageByIndex(index, item)" mode="scaleToFill" class="h-20px w-20px" />
+              <image :src="item.icon" mode="scaleToFill" class="item-icon-img" />
             </template>
-            <view class="mt-2px text-12px">
+            <view class="item-text">
               {{ item.text }}
             </view>
-            <!-- 角标显示 -->
-            <view v-if="item.badge">
+            <view v-if="item.badge" class="item-badge">
               <template v-if="item.badge === 'dot'">
-                <view class="absolute right-0 top-0 h-2 w-2 rounded-full bg-#f56c6c" />
+                <view class="badge-dot" />
               </template>
               <template v-else>
-                <view class="absolute top-0 box-border h-5 min-w-5 center rounded-full bg-#f56c6c px-1 text-center text-xs text-white -right-3">
+                <view class="badge-count">
                   {{ item.badge > 99 ? '99+' : item.badge }}
                 </view>
               </template>
@@ -133,41 +94,114 @@ function getImageByIndex(index: number, item: CustomTabBarItem) {
           </view>
         </view>
       </view>
-
       <view class="pb-safe" />
     </view>
   </view>
 </template>
 
 <style scoped lang="scss">
-.border-and-fixed {
+.hand-tabbar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-
-  border-top: 1px solid #eee;
-  box-sizing: border-box;
+  padding: 8px 12px;
+  background: #fdfbf7;
+  background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-top: 3px solid #2d2d2d;
+  box-shadow: 0 -4px 0px 0px #2d2d2d;
 }
-// 中间鼓包的样式
-.bulge {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform-origin: top center;
-  transform: translateX(-50%) scale(0.5) translateY(-33%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 250rpx;
-  height: 250rpx;
-  border-radius: 50%;
-  background-color: #fff;
-  box-shadow: inset 0 0 0 1px #fefefe;
 
-  &:active {
-    // opacity: 0.8;
-  }
+.hand-tabbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 44px;
+}
+
+.hand-tabbar-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 3px solid #2d2d2d;
+  margin: 0 4px;
+  position: relative;
+  box-shadow: 3px 3px 0px 0px #2d2d2d;
+  transition: all 0.1s ease;
+}
+
+.hand-tabbar-item:nth-child(1) {
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.hand-tabbar-item:nth-child(2) {
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px;
+}
+
+.hand-tabbar-item:nth-child(3) {
+  border-radius: 225px 15px 255px 15px / 15px 255px 15px 225px;
+}
+
+.hand-tabbar-item:active {
+  box-shadow: 1px 1px 0px 0px #2d2d2d;
+  transform: translate(2px, 2px);
+}
+
+.item-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.item-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.item-icon-img {
+  width: 20px;
+  height: 20px;
+}
+
+.item-text {
+  font-size: 10px;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+.item-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff4d4d;
+  border: 2px solid #2d2d2d;
+}
+
+.badge-count {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  background: #ff4d4d;
+  border: 2px solid #2d2d2d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 2px 2px 0px 0px #2d2d2d;
 }
 </style>

@@ -26,10 +26,22 @@ export const selectedTabbarStrategy = TABBAR_STRATEGY_MAP.CUSTOM_TABBAR_WITH_CAC
 // TODO: 2/3. 使用 NATIVE_TABBAR 时，更新下面的 tabbar 配置
 export const nativeTabbarList: NativeTabBarItem[] = [
   {
-    iconPath: 'static/tabbar/home.png',
-    selectedIconPath: 'static/tabbar/homeHL.png',
-    pagePath: 'pages/index/index',
-    text: '首页',
+    iconPath: 'static/tabbar/example.png',
+    selectedIconPath: 'static/tabbar/exampleHL.png',
+    pagePath: 'pages/menu/index',
+    text: '点菜',
+  },
+  {
+    iconPath: 'static/tabbar/example.png',
+    selectedIconPath: 'static/tabbar/exampleHL.png',
+    pagePath: 'pages/ingredients/index',
+    text: '食材',
+  },
+  {
+    iconPath: 'static/tabbar/example.png',
+    selectedIconPath: 'static/tabbar/exampleHL.png',
+    pagePath: 'pages/cart/index',
+    text: '购物车',
   },
   {
     iconPath: 'static/tabbar/personal.png',
@@ -43,49 +55,23 @@ export const nativeTabbarList: NativeTabBarItem[] = [
 // 如果需要配置鼓包，需要在 'tabbar/store.ts' 里面设置，最后在 `tabbar/index.vue` 里面更改鼓包的图片
 export const customTabbarList: CustomTabBarItem[] = [
   {
-    text: '首页',
-    pagePath: 'pages/index/index',
-    // 注意 unocss 图标需要如下处理：（二选一）
-    // 1）在fg-tabbar.vue页面上引入一下并注释掉（见tabbar/index.vue代码第2行）
-    // 2）配置到 unocss.config.ts 的 safelist 中
+    text: '食谱',
+    pagePath: 'pages/menu/index',
     iconType: 'unocss',
-    icon: 'i-carbon-home',
-    // badge: 'dot',
+    icon: 'i-carbon-book',
   },
   {
-    pagePath: 'pages/me/me',
+    text: '购物车',
+    pagePath: 'pages/cart/index',
+    iconType: 'unocss',
+    icon: 'i-carbon-shopping-cart',
+  },
+  {
     text: '我的',
-    // 1）在fg-tabbar.vue页面上引入一下并注释掉（见tabbar/index.vue代码第2行）
-    // 2）配置到 unocss.config.ts 的 safelist 中
+    pagePath: 'pages/me/me',
     iconType: 'unocss',
     icon: 'i-carbon-user',
-    // badge: 10,
   },
-  // 其他类型演示
-  // 1、uiLib
-  // {
-  //   pagePath: 'pages/index/index',
-  //   text: '首页',
-  //   iconType: 'uiLib',
-  //   icon: 'home',
-  // },
-  // 2、iconfont
-  // {
-  //   pagePath: 'pages/index/index',
-  //   text: '首页',
-  //   // 注意 iconfont 图标需要额外加上 'iconfont'，如下
-  //   iconType: 'iconfont',
-  //   icon: 'iconfont icon-my',
-  // },
-  // 3、image
-  // {
-  //   pagePath: 'pages/index/index',
-  //   text: '首页',
-  //   // 使用 ‘image’时，需要配置 icon + iconActive 2张图片
-  //   iconType: 'image',
-  //   icon: '/static/tabbar/home.png',
-  //   iconActive: '/static/tabbar/homeHL.png',
-  // },
 ]
 
 /**

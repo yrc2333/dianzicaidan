@@ -37,7 +37,7 @@
     "dev:app-ios": "uni -p app-ios",
     "dev:custom": "uni -p",
     "predev": "pnpm init-baseFiles",
-    "dev": "uni",
+    "dev": "pnpm dev:mp-weixin",
     "dev:test": "uni --mode test",
     "dev:prod": "uni --mode production",
     "dev:h5": "uni",
