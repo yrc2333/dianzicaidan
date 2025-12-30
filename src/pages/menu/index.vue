@@ -66,7 +66,7 @@ function goToIngredients() {
 <template>
   <view class="h-screen flex bg-[#fdfbf7]">
     <!-- 分类列表 - 固定定位 -->
-    <view class="fixed left-0 top-0 z-10 w-20 overflow-y-auto bg-white" style="height: calc(100vh - 140px);">
+    <view class="fixed left-0 top-0 z-10 w-20 overflow-x-hidden overflow-y-auto bg-white" style="height: calc(100vh - 140px);">
       <view
         v-for="category in categories"
         :key="category.id"
@@ -76,13 +76,13 @@ function goToIngredients() {
         @click="selectCategory(category.id)"
       >
         <text class="mb-1 text-xl">{{ category.icon }}</text>
-        <text class="font-hand-body px-1 text-center text-xs">{{ category.name }}</text>
+        <text class="font-hand-body w-full break-words px-1 text-center text-xs">{{ category.name }}</text>
       </view>
     </view>
 
     <!-- 食物列表 - 可滚动 -->
     <view class="ml-20 flex-1 overflow-y-auto p-4" style="height: calc(100vh - 140px);">
-      <view class="grid grid-cols-2 gap-4">
+      <view class="grid grid-cols-2 gap-3">
         <view
           v-for="food in currentFoods"
           :key="food.id"
@@ -93,18 +93,15 @@ function goToIngredients() {
           <view class="tape-decoration" />
 
           <!-- 食物图片 -->
-          <image :src="food.image" :alt="food.name" class="wobbly-border-b h-28 w-full object-cover" />
+          <image :src="food.image" :alt="food.name" class="wobbly-border-b h-32 w-full object-cover" />
 
           <view class="p-3">
-            <text class="font-hand-heading text-sm">{{ food.name }}</text>
-            <text class="ml-1 text-xs">
-              <text v-for="i in 5" :key="i">
-                {{ i <= food.spicyLevel ? '🌶️' : '⚪' }}
-              </text>
+            <text class="font-hand-heading block text-sm">{{ food.name }}</text>
+            <text class="ml-1 mt-1 text-xs">
+              <text v-for="i in food.spicyLevel" :key="i">🌶️</text>
             </text>
-            <text class="font-hand-body line-clamp-1 mt-1 block text-xs text-gray-600">{{ food.description }}</text>
+            <text class="font-hand-body line-clamp-2 mt-1 block text-xs text-gray-600">{{ food.description }}</text>
             <view class="mt-2 flex items-center justify-between">
-              <text class="font-hand-heading text-base text-[#ff4d4d]">¥{{ food.price.toFixed(2) }}</text>
               <view
                 class="btn-hand-mini h-8 w-8"
                 @click="addToCart(food)"

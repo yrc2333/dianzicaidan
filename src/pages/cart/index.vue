@@ -5,8 +5,7 @@ import { useCartStore } from '@/store'
 
 // 页面配置
 definePage({
-  navigationBarTitleText: '购物车',
-  type: 'home',
+  navigationBarTitleText: '心愿单',
 })
 
 const cartStore = useCartStore()
@@ -17,7 +16,7 @@ function updateQuantity(item: CartItem, quantity: number) {
     // 确认删除
     uni.showModal({
       title: '确认删除',
-      content: '确定要从购物车中删除该菜品吗？',
+      content: '确定要从心愿单中删除该菜品吗？',
       success: (res) => {
         if (res.confirm) {
           cartStore.removeFromCart(item.food.id)
@@ -52,7 +51,7 @@ function clearCart() {
 
   uni.showModal({
     title: '确认清空',
-    content: '确定要清空购物车吗？',
+    content: '确定要清空心愿单吗？',
     success: (res) => {
       if (res.confirm) {
         cartStore.clearCart()
@@ -122,7 +121,7 @@ const selectedTotalQuantity = computed(() => {
         <text class="font-hand-body mb-8 text-lg text-gray-600">购物车是空的，快去点菜吧！</text>
         <button
           class="btn-hand-lg hard-shadow"
-          @click="uni.navigateBack()"
+          @click="uni.switchTab({ url: '/pages/menu/index' })"
         >
           去点菜
         </button>

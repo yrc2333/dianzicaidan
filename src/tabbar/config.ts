@@ -61,7 +61,7 @@ export const customTabbarList: CustomTabBarItem[] = [
     icon: 'i-carbon-book',
   },
   {
-    text: '购物车',
+    text: '心愿单',
     pagePath: 'pages/cart/index',
     iconType: 'unocss',
     icon: 'i-carbon-shopping-cart',
