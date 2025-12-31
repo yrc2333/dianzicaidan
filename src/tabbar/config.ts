@@ -41,7 +41,7 @@ export const nativeTabbarList: NativeTabBarItem[] = [
     iconPath: 'static/tabbar/example.png',
     selectedIconPath: 'static/tabbar/exampleHL.png',
     pagePath: 'pages/cart/index',
-    text: '购物车',
+    text: '心愿单',
   },
   {
     iconPath: 'static/tabbar/personal.png',

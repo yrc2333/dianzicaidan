@@ -19,7 +19,7 @@ const address = ref({
   address: '北京市朝阳区建国路88号'
 })
 
-// 计算选中的购物车项
+// 计算选中的心愿单项
 const selectedItems = computed(() => {
   return cartStore.items.filter(item => item.selected)
 })

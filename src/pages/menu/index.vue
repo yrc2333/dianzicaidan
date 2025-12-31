@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Food, FoodCategory } from '@/types/food'
 import { computed, onMounted, ref } from 'vue'
+import IngredientsDrawer from '@/components/IngredientsDrawer.vue'
 import { foodCategories, foods } from '@/mock/food'
 import { useCartStore } from '@/store'
 
@@ -30,36 +31,22 @@ function selectCategory(categoryId: number) {
   selectedCategory.value = categoryId
 }
 
-// 加入购物车
+// 加入心愿单
 function addToCart(food: Food) {
   cartStore.addToCart(food, 1)
   uni.showToast({
-    title: '已加入购物车',
+    title: '已添加至心愿单',
     icon: 'success',
     duration: 1000,
   })
 }
 
-// 跳转到确认订单页面
-function goToConfirm() {
-  if (cartStore.items.length === 0) {
-    uni.showToast({
-      title: '购物车为空',
-      icon: 'none',
-      duration: 1000,
-    })
-    return
-  }
-  uni.navigateTo({
-    url: '/pages/confirm/index',
-  })
-}
+// 食材抽屉状态
+const showIngredientsDrawer = ref(false)
 
-// 跳转到食材页面
-function goToIngredients() {
-  uni.navigateTo({
-    url: '/pages/ingredients/index',
-  })
+// 关闭食材抽屉
+function closeIngredientsDrawer() {
+  showIngredientsDrawer.value = false
 }
 </script>
 
@@ -70,9 +57,8 @@ function goToIngredients() {
       <view
         v-for="category in categories"
         :key="category.id"
-        class="rotate-hover flex flex-col cursor-pointer items-center justify-center py-4 transition-all"
-        :class="selectedCategory === category.id ? 'bg-white border-l-4 border-[#ff4d4d] hard-shadow-sm' : 'bg-[#fdfbf7]'"
-        :style="{ '--rotate-deg': `${Math.random() * 3 - 1.5}deg` }"
+        class="flex flex-col cursor-pointer items-center justify-center py-4 transition-all"
+        :class="selectedCategory === category.id ? 'bg-white border-l-4 border-[#ff4d4d]' : 'bg-[#fdfbf7]'"
         @click="selectCategory(category.id)"
       >
         <text class="mb-1 text-xl">{{ category.icon }}</text>
@@ -114,34 +100,20 @@ function goToIngredients() {
       </view>
     </view>
 
-    <!-- 购物车底部栏 -->
-    <view class="wobbly-border-t hard-shadow fixed bottom-0 left-0 right-0 bg-white p-4">
-      <view class="flex items-center justify-between">
-        <view>
-          <text class="font-hand-body text-sm">合计：</text>
-          <text class="font-hand-heading text-2xl text-[#ff4d4d]">¥{{ cartStore.totalAmount.toFixed(2) }}</text>
-          <text class="font-hand-body ml-2 text-sm">({{ cartStore.totalQuantity }}件)</text>
-        </view>
-        <button
-          class="btn-hand-lg"
-          :class="cartStore.items.length === 0 ? 'opacity-50 cursor-not-allowed' : ''"
-          :disabled="cartStore.items.length === 0"
-          @click="goToConfirm"
-        >
-          提交订单
-        </button>
-      </view>
-    </view>
-
     <!-- 食材入口按钮 -->
     <view
-      class="fixed bottom-24 right-4 z-50"
-      @click="goToIngredients"
+      class="fixed bottom-30 right-4 z-50"
+      @click="showIngredientsDrawer = true"
     >
       <view class="btn-hand-mini h-14 w-14">
         <view class="i-carbon-nutrition text-24px" />
       </view>
-      <text class="font-hand-body mt-1 block text-center text-xs text-[#2d2d2d]">食材</text>
     </view>
+
+    <!-- 食材抽屉组件 -->
+    <IngredientsDrawer
+      :show="showIngredientsDrawer"
+      @close="closeIngredientsDrawer"
+    />
   </view>
 </template>

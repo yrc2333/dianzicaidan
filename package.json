@@ -15,12 +15,6 @@
     "gitee": "https://gitee.com/feige996"
   },
   "license": "MIT",
-  "homepage": "https://unibest.tech",
-  "repository": "https://github.com/feige996/unibest",
-  "bugs": {
-    "url": "https://github.com/feige996/unibest/issues",
-    "url-old": "https://github.com/codercup/unibest/issues"
-  },
   "engines": {
     "node": ">=20",
     "pnpm": ">=9"
