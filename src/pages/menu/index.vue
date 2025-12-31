@@ -9,7 +9,9 @@ import { useCartStore } from '@/store'
 definePage({
   // 使用 type: "home" 属性设置首页
   type: 'home',
-  navigationBarTitleText: '点菜',
+  style: {
+    navigationBarTitleText: '点菜',
+  },
 })
 
 const cartStore = useCartStore()
@@ -29,6 +31,11 @@ const currentFoods = computed(() => {
 // 选择分类
 function selectCategory(categoryId: number) {
   selectedCategory.value = categoryId
+}
+
+// 检查菜品是否已添加到心愿单
+function isFoodInWishlist(foodId: number) {
+  return cartStore.items.some(item => item.food.id === foodId)
 }
 
 // 加入心愿单
@@ -73,6 +80,7 @@ function closeIngredientsDrawer() {
           v-for="food in currentFoods"
           :key="food.id"
           class="card-hand rotate-hover relative overflow-hidden bg-white"
+          :class="{ 'border-2 border-red-500': isFoodInWishlist(food.id) }"
           :style="{ '--rotate-deg': `${Math.random() * 4 - 2}deg` }"
         >
           <!-- 装饰性胶带 -->

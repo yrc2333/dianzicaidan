@@ -5,7 +5,9 @@ import { foods } from '@/mock/food'
 
 // 页面配置
 definePage({
-  navigationBarTitleText: '食材',
+  style: {
+    navigationBarTitleText: '食材',
+  },
 })
 
 // 所有食材数据

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { CartItem } from '@/types/food'
-import { computed } from 'vue'
 import { useCartStore } from '@/store'
 
 // 页面配置
 definePage({
-  navigationBarTitleText: '心愿单',
+  style: {
+    navigationBarTitleText: '心愿单',
+  },
 })
 
 const cartStore = useCartStore()
